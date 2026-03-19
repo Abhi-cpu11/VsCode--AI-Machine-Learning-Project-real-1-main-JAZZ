@@ -1,3 +1,6 @@
+html {
+  scroll-behavior: smooth;
+}
 * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -62,16 +65,19 @@
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 18px;
     }
-.card {
+    .card {
   background: linear-gradient(180deg, #1f2937, #111827);
   border: 1px solid #374151;
   border-radius: 18px;
   padding: 18px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.team-grid .card {
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.card:hover {
+.team-grid .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 14px 30px rgba(0,0,0,0.35);
   border-color: #f97316;
@@ -239,7 +245,7 @@
       .sidebar { border-right: none; border-bottom: 1px solid #1f2937; }
       .comparison-layout { grid-template-columns: 1fr; }
     }
-    .matchup-bar {
+ .matchup-bar {
   position: fixed;
   left: 50%;
   bottom: 24px;
@@ -255,6 +261,18 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.matchup-bar.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(20px);
+}
+
+.matchup-bar:not(.hidden) {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .matchup-text {
