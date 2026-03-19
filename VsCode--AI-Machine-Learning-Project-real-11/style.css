@@ -62,13 +62,20 @@
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 18px;
     }
-    .card {
-      background: linear-gradient(180deg, #1f2937, #111827);
-      border: 1px solid #374151;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
+.card {
+  background: linear-gradient(180deg, #1f2937, #111827);
+  border: 1px solid #374151;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+  border-color: #f97316;
+}
     .team-color {
       width: 100%;
       height: 8px;
@@ -232,3 +239,41 @@
       .sidebar { border-right: none; border-bottom: 1px solid #1f2937; }
       .comparison-layout { grid-template-columns: 1fr; }
     }
+    .matchup-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 40px));
+  z-index: 1000;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(17, 24, 39, 0.96);
+  border: 1px solid #374151;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.matchup-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.vs-text {
+  color: #f97316;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.matchup-subtext {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #9ca3af;
+}

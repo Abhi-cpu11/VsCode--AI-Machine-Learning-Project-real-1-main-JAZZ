@@ -4,14 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CourtVision - Basketball Analytics</title>
-  <link href="style.css" rel="stylesheet"/>
-
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">CourtVision</div>
-      <div class="sub">Basketball analytics dashboard for team comparison and strategy recommendations.</div>
+      <div class="sub">
+        Basketball analytics dashboard for team comparison and strategy recommendations.
+      </div>
+
       <div class="nav">
         <button class="active" onclick="showPage('dashboard')">Dashboard</button>
         <button onclick="showPage('comparison')">Comparison</button>
@@ -21,11 +23,17 @@
     <main class="main">
       <section id="dashboardPage">
         <h1>Dashboard</h1>
-        <div class="muted">Select two teams to analyze the matchup.</div>
+        <div class="muted">Select teams to analyze the matchup.</div>
 
-        <div class="top-bar">
-          <div class="pill" id="selectedA">Team A: None</div>
-          <div class="pill" id="selectedB">Team B: None</div>
+        <div id="matchupBar" class="matchup-bar hidden">
+          <div>
+            <div class="matchup-text">
+              <span id="matchupTeamA">Select Team</span>
+              <span class="vs-text">vs</span>
+              <span id="matchupTeamB">Select Team</span>
+            </div>
+            <div id="matchupSub" class="matchup-subtext">Select a team to begin</div>
+          </div>
           <button class="analyze-btn" onclick="goToComparison()">Analyze Matchup</button>
         </div>
 
@@ -35,7 +43,6 @@
       <section id="comparisonPage" class="hidden">
         <h1>Matchup Analysis</h1>
         <div class="muted">Head-to-head comparison, radar chart, and game plan.</div>
-
         <div id="comparisonContent"></div>
       </section>
     </main>
@@ -120,18 +127,45 @@
       return Math.round((team.fg * 0.6) + (team.three * 0.7));
     }
 
+    function updateMatchupBar() {
+      const matchupBar = document.getElementById("matchupBar");
+      const matchupTeamA = document.getElementById("matchupTeamA");
+      const matchupTeamB = document.getElementById("matchupTeamB");
+      const matchupSub = document.getElementById("matchupSub");
+
+      if (selectedTeamA || selectedTeamB) {
+        matchupBar.classList.remove("hidden");
+
+        matchupTeamA.textContent = selectedTeamA ? selectedTeamA.name : "Select Team";
+        matchupTeamB.textContent = selectedTeamB ? selectedTeamB.name : "Select Team";
+
+        if (selectedTeamA && selectedTeamB) {
+          matchupSub.textContent = "Ready for analysis";
+        } else {
+          matchupSub.textContent = "Select another team";
+        }
+      } else {
+        matchupBar.classList.add("hidden");
+      }
+    }
+
     function renderTeams() {
       const grid = document.getElementById("teamGrid");
       grid.innerHTML = "";
 
       teams.forEach(team => {
-        const isSelected = selectedTeamA?.id === team.id || selectedTeamB?.id === team.id;
+        const isSelected =
+          (selectedTeamA && selectedTeamA.id === team.id) ||
+          (selectedTeamB && selectedTeamB.id === team.id);
+
         const card = document.createElement("div");
         card.className = "card";
+
         card.innerHTML = `
           <div class="team-color" style="background:${team.color}"></div>
           <div class="team-name">${team.name}</div>
           <div class="team-conf">${team.conference}</div>
+
           <div class="stats">
             <div class="stat-box">
               <div class="stat-label">Offense</div>
@@ -150,16 +184,17 @@
               <div class="stat-value">${team.three}%</div>
             </div>
           </div>
+
           <button class="select-btn ${isSelected ? 'selected' : ''}">
             ${isSelected ? 'Selected' : 'Select Team'}
           </button>
         `;
+
         card.querySelector("button").onclick = () => selectTeam(team);
         grid.appendChild(card);
       });
 
-      document.getElementById("selectedA").textContent = "Team A: " + (selectedTeamA ? selectedTeamA.name : "None");
-      document.getElementById("selectedB").textContent = "Team B: " + (selectedTeamB ? selectedTeamB.name : "None");
+      updateMatchupBar();
     }
 
     function selectTeam(team) {
@@ -175,6 +210,7 @@
         selectedTeamA = team;
         selectedTeamB = null;
       }
+
       renderTeams();
     }
 
@@ -244,6 +280,7 @@
         Math.min(100, controlRating(a)),
         Math.min(100, a.ppg)
       ];
+
       const bValues = [
         offenseRating(b),
         defenseRating(b),
@@ -286,7 +323,7 @@
         container.innerHTML = `
           <div class="card">
             <div class="panel-title">No matchup selected</div>
-            <div class="muted">Go back to the dashboard and select two teams first.</div>
+            <div class="muted">Select two teams from the dashboard first.</div>
           </div>
         `;
         return;
@@ -367,6 +404,7 @@
 
       const buttons = document.querySelectorAll(".nav button");
       buttons.forEach(btn => btn.classList.remove("active"));
+
       if (page === "dashboard") buttons[0].classList.add("active");
       if (page === "comparison") buttons[1].classList.add("active");
 
